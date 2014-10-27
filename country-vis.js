@@ -10,7 +10,7 @@ var w = 800,
         .attr("width", w)
         .attr("height", h),
     g = svg.append("g"),
-    csize = 10;
+    csize = 20;
 
 d3.json("maps/world-110m.json", function(e, topology) {
   var countries = topojson
@@ -28,20 +28,31 @@ d3.json("maps/world-110m.json", function(e, topology) {
     d.bb = path.bounds(d);
     d.bb_w = (d.bb[1][0] - d.bb[0][0]),
     d.bb_h = (d.bb[1][1] - d.bb[0][1]);
+    d.bb_maxdim = d.bb_w > d.bb_h ? d.bb_w : d.bb_h;
+    d.scale = d.bb_w > d.bb_h ? csize / d.bb_w : csize / d.bb_h;
     return d;
   });
+  // Scale the groups
+  // Draw the country outlines
   countryGroups.append("path")
     .attr("d", path)
     .attr("vector-effect", "non-scaling-stroke") // Stops stroke scaling with translate()
     .attr("transform", function(d) {
-      /* scale-factor to ensure neither width nor height is
-      * greater than csize */
-      var scale = d.bb_w > d.bb_h ? csize / d.bb_w : csize / d.bb_h;
       return "translate(" + d.x + "," + d.y + ")"
-        + "scale(" + scale + ")"
+        + "scale(" + d.scale + ")"
         + "translate(" + -d.x + "," + -d.y + ")";
     });
-  countryGroups.data(function(d) {
-    return path.centroid(d);
-  }).append("rect")
+  // Draw a box around each country
+  countryGroups.append("rect")
+    .attr("width", function(d) { return csize; })
+    .attr("height", function(d) { return csize; })
+    .attr("vector-effect", "non-scaling-stroke") // Stops stroke scaling with translate()
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("transform", function(d) {
+      /* scale-factor to ensure neither width nor height is
+      * greater than csize */
+      return "translate(" + (d.x - csize / 2) + "," + (d.y - csize / 2) + ")";
+        //+ "scale(" + d.scale + ")";
+    });
 });

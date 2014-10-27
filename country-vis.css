@@ -3,3 +3,10 @@
   stroke: grey;
   stroke-width: 1.3px;
 }
+path {
+  stroke: grey;
+}
+
+rect {
+  stroke: blue;
+}

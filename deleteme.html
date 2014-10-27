@@ -2,99 +2,17 @@
 <meta charset="utf-8">
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="force-layout.js"></script>
+<script src="rectangle-layout.js"></script>
 <script>
 
-var width = 960,
-    height = 500;
-var abs = Math.abs;
 //var nodes = d3.range(40).map(function() { return {radius: Math.random() * 40 + 4}; });
-var countries = d3.range(9).map(
-    function() { return {height: 20, width: 30}; });
+//var countries = d3.range(9).map(
+//    function() { return {height: 20, width: 30}; });
 var countries = d3.range(20).map(
     function() { return {
-        height: Math.random() * 40 + 4,
-        width: Math.random() * 10 + 4
+        height: Math.random() * 150 + 20,
+        width: Math.random() * 150 + 20
       }; });
-rectangleLayout(countries);
-/*
-var force = d3.layout.force()
-    .gravity(0.05)
-    .charge(function(d, i) { return 0; })
-    .nodes(nodes)
-    .size([width, height]);
-
-force.start();
-
-var canvas = d3.select("body").append("canvas")
-    .attr("width", width)
-    .attr("height", height);
-
-var context = canvas.node().getContext("2d");
-
-force.on("tick", function(e) {
-  var q = d3.geom.quadtree(nodes),
-      i,
-      d,
-      n = nodes.length;
-
-  for (i = 0; i < n; ++i) q.visit(collide(nodes[i]));
-
-  context.clearRect(0, 0, width, height);
-  context.fillStyle = "steelblue";
-  context.beginPath();
-  for (i = 0; i < n; ++i) {
-    d = nodes[i];
-    context.moveTo(d.x, d.y);
-    context.rect(d.x - (d.radius / 2), d.y - (d.radius / 2), d.radius, d.radius);
-  }
-  context.fill();
-  context.stroke();
-});
-
-canvas.on("mousemove", function() {
-  var p1 = d3.mouse(this);
-//  root.px = p1[0];
-//  root.py = p1[1];
-  force.resume();
-});
-
-function collide(node) {
-  var r = node.radius / 2 + 16,
-      nx1 = node.x - r,
-      nx2 = node.x + r,
-      ny1 = node.y - r,
-      ny2 = node.y + r;
-  return function(quad, x1, y1, x2, y2) {
-    // quad is the 'box' of the quad tree.
-    // it might have a point in it, or not.
-    // It also contains its child nodes
-    // unless quad.leaf == true
-    if (quad.point && (quad.point !== node)) {
-      // This box contains a point
-      var p = quad.point;
-      var x = node.x - p.x, // Distance from node to the quad square's point
-          y = node.y - p.y,
-          lx = abs(x),
-          ly = abs(y),
-          r = (node.radius + p.radius) / 2;
-        if ((abs(node.x - p.x) * 2 < (node.radius + p.radius)) &&
-            (abs(node.y - p.y) * 2 < (node.radius + p.radius))) {
-          // The rectangles overlap (since difference in x is smaller than
-          // the two sizes and so is the difference in y.)
-          // Move node and quad in opposite directions
-          // But only move in whichever direction is the smallest
-          var dx = (ly < lx) ? (lx - r) / lx * .5 : 0;
-          var dy = (lx < ly) ? (ly - r) / ly * .5 : 0;
-          node.x -= x *= dx;
-          node.y -= y *= dy;
-          p.x += x;
-          p.y += y;
-        }
-    }
-    return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1; // This is quad tree stuff
-  };
-}
-*/
+rectangleLayout(countries, 900, 900);
 </script>
 

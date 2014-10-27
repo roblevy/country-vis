@@ -1,16 +1,15 @@
-var width = 960,
-    height = 500;
-var canvas = d3.select("body").append("canvas")
-    .attr("width", width)
-    .attr("height", height);
-
-var context = canvas.node().getContext("2d");
-
-function rectangleLayout(nodes) {
+function rectangleLayout(nodes, w, h) {
   // Ripped mercilessly from 
   // http://bl.ocks.org/mbostock/3231307
+  var width = w ? w : 960,
+      height = h ? h : 500;
+  var abs = Math.abs;
+  var canvas = d3.select("body").append("canvas")
+    .attr("width", width)
+    .attr("height", height);
+  var context = canvas.node().getContext("2d");
   var force = d3.layout.force()
-    .gravity(0.04)
+    .gravity(0.02)
     .charge(function(d, i) { return 0; })
     .nodes(nodes)
     .size([width, height]);
@@ -66,7 +65,7 @@ function rectangleLayout(nodes) {
             ly = abs(y),
             rx = (node.width + p.width) / 2;
             ry = (node.height + p.height) / 2;
-        // The following test is courtesy of
+        // The following "do we overlap" test is courtesy of
         // http://gamedev.stackexchange.com/a/587
         if ((abs(node.x - p.x) * 2 < (node.width + p.width)) &&
             (abs(node.y - p.y) * 2 < (node.height + p.height))) {
