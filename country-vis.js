@@ -55,4 +55,8 @@ d3.json("maps/world-110m.json", function(e, topology) {
       return "translate(" + (d.x - csize / 2) + "," + (d.y - csize / 2) + ")";
         //+ "scale(" + d.scale + ")";
     });
+  countryGroups.append("circle")
+    .attr("cx", function(d) { return d.x; })
+    .attr("cy", function(d) { return d.y; })
+    .attr("r", 5);
 });
