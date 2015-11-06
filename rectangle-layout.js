@@ -1,20 +1,17 @@
-function rectangleLayout(nodes, w, h) {
+var force;
+
+function rectangleLayout(selection, w, h) {
   // Ripped mercilessly from 
   // http://bl.ocks.org/mbostock/3231307
-  var width = w ? w : 960,
-      height = h ? h : 500;
-  var abs = Math.abs;
-  var canvas = d3.select("body").append("canvas")
-    .attr("width", width)
-    .attr("height", height);
-  var context = canvas.node().getContext("2d");
-  var force = d3.layout.force()
+  var abs = Math.abs,
+      nodes = selection.data();
+
+  force = d3.layout.force()
     .gravity(0.02)
     .charge(function(d, i) { return 0; })
     .nodes(nodes)
-    .size([width, height]);
+    .size([w, h]);
 
-  force.start();
 
   force.on("tick", function(e) {
     var q = d3.geom.quadtree(nodes),
@@ -22,25 +19,20 @@ function rectangleLayout(nodes, w, h) {
     n = nodes.length;
 
     for (i = 0; i < n; ++i) q.visit(collide(nodes[i]));
-    drawNodes(nodes)
+    drawNodes()
   });
 
-  function drawNodes(nodes) {
-    var i,
-        d,
-        n = nodes.length;
-    
-    context.clearRect(0, 0, width, height);
-    context.fillStyle = "steelblue";
-    context.beginPath();
-    for (i = 0; i < n; ++i) {
-      d = nodes[i];
-      context.moveTo(d.x, d.y);
-      context.rect(d.x - (d.width / 2), d.y - (d.height / 2), d.width, d.height);
-    }
-    context.fill();
-    context.stroke();
+  function drawNodes() {
+    selection.data(nodes).attr("transform", function(d) {
+      return "translate(" + (d.x - d.centroid[0])
+                    + "," + (d.y - d.centroid[1]) + ")";
+    });
   }
+
+  svg.on("click", function(d) {
+    force.start();
+    force.resume();
+  });
 
   function collide(node) {
     // This part of the code is what behaves diffrerently to the blocks

@@ -1,16 +1,18 @@
 // Draw countries in a more-or-less geographically appropriate grid layout
 // with all countries being of equal size
 
-var w = 800,
-    h = 640,
-    projection = d3.geo.mercator(),
+var w = 2800,
+    h = 2800,
+    projection = d3.geo.mercator()
+      .translate([w / 2, h / 2])
+      .scale(800),
     path = d3.geo.path()
       .projection(projection),
     svg = d3.select("body").append("svg")
         .attr("width", w)
         .attr("height", h),
     g = svg.append("g"),
-    csize = 20;
+    csize = 40;
 
 d3.json("maps/world-110m.json", function(e, topology) {
   var countries = topojson
@@ -55,8 +57,17 @@ d3.json("maps/world-110m.json", function(e, topology) {
       return "translate(" + (d.x - csize / 2) + "," + (d.y - csize / 2) + ")";
         //+ "scale(" + d.scale + ")";
     });
-  countryGroups.append("circle")
-    .attr("cx", function(d) { return d.x; })
-    .attr("cy", function(d) { return d.y; })
-    .attr("r", 5);
+//  countryGroups.append("circle")
+//    .attr("cx", function(d) { return d.x; })
+//    .attr("cy", function(d) { return d.y; })
+//    .attr("r", 5);
+  countryGroups.each(function (d) {
+    var selection = d3.select(this),
+        bbox = selection.node().getBBox();
+    d.width = bbox.width;
+    d.height = bbox.height;
+  });
+
+  rectangleLayout(countryGroups, w, h);
+
 });
